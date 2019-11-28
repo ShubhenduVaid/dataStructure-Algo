@@ -1,4 +1,4 @@
-// An Array implementation by LinkList in Javascript
+// An Array implementation using LinkList in Javascript
 
 function LinkList(value, next) {
   this.value = value;
@@ -78,5 +78,5 @@ myList.write(0, 5);
 console.log(myList.toString());
 myList.insert(1, 0);
 console.log(myList.toString());
-myList.insert(0, 0);
+myList.insert(1, 0);
 console.log(myList.toString());
