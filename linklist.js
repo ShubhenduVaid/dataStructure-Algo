@@ -1,82 +1,131 @@
-// An Array implementation using LinkList in Javascript
-
-function LinkList(value, next) {
+function Node(value, next) {
   this.value = value;
   this.next = next;
+}
+
+function Head(next) {
+  this.next = next;
+}
+
+function LinkedList() {
+  this.head = new Head(null);
   this.toString = () => JSON.stringify(this);
-  this.createNode = value => {
-    return new LinkList(value, null);
-    // return { value: value, next: null };
-  };
+  this.createNode = (value, next) => new Node(value, next);
   this.push = value => {
-    const newNode = this.createNode(value);
-    let currentNode = this;
-    while (currentNode.next) {
-      currentNode = currentNode.next;
+    if (!this.head) {
+      this.head = this.createNode(value, null);
+    } else {
+      let currentNode = this.head;
+      while (currentNode.next) {
+        currentNode = currentNode.next;
+      }
+      currentNode.next = this.createNode(value, null);
     }
-    currentNode.next = newNode;
   };
   this.pop = () => {
-    let currentNode = this;
+    if (!this.head.next) {
+      throw Error("Empty");
+    }
+    let currentNode = this.head.next;
+    if (!currentNode.next) {
+      const poppedValue = currentNode.value;
+      this.head.next = null;
+      return poppedValue;
+    }
     let lastNode;
     while (currentNode.next) {
       lastNode = currentNode;
       currentNode = currentNode.next;
     }
-    const popped = lastNode.next;
+    const poppedValue = currentNode.value;
     lastNode.next = null;
-    return popped.value;
+    return poppedValue;
   };
   this.read = index => {
-    let currentNode = this;
     let count = 0;
-    while (currentNode.next && count !== index) {
-      currentNode = currentNode.next;
-      count++;
+    if (index < count) {
+      throw Error("Index can't be negative");
     }
-    return count === index ? currentNode.value : undefined;
+    let currentNode = this.head.next;
+    if (!currentNode.next) {
+      if (index !== count) {
+        throw Error("Index out of range");
+      } else {
+        return currentNode.value;
+      }
+    }
+    while (currentNode.next && index !== count) {
+      count++;
+      currentNode = currentNode.next;
+    }
+    if (index === count) {
+      return currentNode.value;
+    } else {
+      throw Error("Index out of range");
+    }
   };
   this.write = (index, value) => {
-    let currentNode = this;
     let count = 0;
-    while (currentNode.next && count !== index) {
-      currentNode = currentNode.next;
-      count++;
+    if (index < count) {
+      throw Error("Index can't be negative");
     }
-    currentNode.value = value;
+    let currentNode = this.head.next;
+    if (!currentNode.next) {
+      if (index !== count) {
+        throw Error("Index out of range");
+      } else {
+        currentNode.value = value;
+        return;
+      }
+    }
+    while (currentNode.next && index !== count) {
+      count++;
+      currentNode = currentNode.next;
+    }
+    if (index === count) {
+      currentNode.value = value;
+    } else {
+      throw Error("Index out of range");
+    }
   };
   this.insert = (index, value) => {
-    let currentNode = this;
-    let lastNode;
     let count = 0;
-    while (currentNode.next && count !== index) {
-      lastNode = currentNode;
-      currentNode = currentNode.next;
+    if (index < count) {
+      throw Error("Index can't be negative");
+    }
+    if (!this.head.next) {
+      if (index === count) {
+        const node = new Node(value, null);
+        this.head.next = node;
+        return;
+      } else {
+        throw Error("Index out of range");
+      }
+    }
+    let currentNode = this.head.next;
+    while (currentNode.next && index !== count) {
       count++;
+      currentNode = currentNode.next;
     }
-    if (lastNode && lastNode.next) {
-      lastNode.next = this.createNode(value);
+    if (currentNode.next) {
+      currentNode.next = new Node(value, currentNode.next);
     } else {
-      lastNode = this.createNode(value);
-    }
-    if (!lastNode.next) {
-      lastNode.next = currentNode;
-    } else {
-      lastNode.next.next = currentNode;
+      currentNode.next = new Node(value, null);
     }
   };
 }
 
-const myList = new LinkList(1, null);
-myList.push(2);
-myList.push(3);
-myList.push(4);
+const myList = new LinkedList();
+myList.push(0);
+myList.push(1);
+console.log(myList.read(0), myList.read(1));
+myList.write(0, 10);
+myList.write(1, 11);
+console.log(myList.toString());
 console.log(myList.pop());
-console.log(myList.toString());
-console.log(myList.read(0), myList.read(1), myList.read(2), myList.read(3));
-myList.write(0, 5);
-console.log(myList.toString());
-myList.insert(1, 0);
-console.log(myList.toString());
-myList.insert(1, 0);
+console.log(myList.pop());
+myList.insert(0, 0);
+myList.insert(1, 1);
+myList.insert(2, 2);
+myList.insert(3, 100);
 console.log(myList.toString());
