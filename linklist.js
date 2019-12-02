@@ -113,6 +113,24 @@ function LinkedList() {
       currentNode.next = new Node(value, null);
     }
   };
+  this.reverse = () => {
+    if (!this.head.next || !this.head.next.next) {
+      return JSON.stringify(this);
+    }
+    let currentNode = this.head.next.next;
+    let lastNode = this.head.next;
+    const firstNode = this.head.next;
+    while (currentNode.next) {
+      const tempNodeNext = currentNode.next;
+      currentNode.next = lastNode;
+      lastNode = currentNode;
+      currentNode = tempNodeNext;
+    }
+    currentNode.next = lastNode;
+    this.head.next = currentNode;
+    firstNode.next = null;
+    return JSON.stringify(this);
+  };
 }
 
 const myList = new LinkedList();
@@ -129,3 +147,4 @@ myList.insert(1, 1);
 myList.insert(2, 2);
 myList.insert(3, 100);
 console.log(myList.toString());
+console.log(myList.reverse());
